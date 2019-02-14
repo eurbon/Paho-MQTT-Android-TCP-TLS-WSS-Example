@@ -99,10 +99,14 @@ public class MainActivity extends AppCompatActivity {
          * Certificate can be found in resources folder /res/raw/
          */
         if (BROKER.contains("ssl")) {
-            SocketFactory.SocketFactoryOptions socketFactoryOptions = new SocketFactory.SocketFactoryOptions();
+            SelfSignedSocketFactory.SocketFactoryOptions socketFactoryOptions = new SelfSignedSocketFactory.SocketFactoryOptions();
             try {
-                socketFactoryOptions.withCaInputStream(context.getResources().openRawResource(paho.android.mqtt_example.R.raw.mosquitto_org));
-                MQTT_CONNECTION_OPTIONS.setSocketFactory(new SocketFactory(socketFactoryOptions));
+                socketFactoryOptions.withCaInputStream(context.getResources().openRawResource(R.raw.ca))
+                    .withClientBksInputStream(getResources().openRawResource(R.raw.client_bks))
+                .withClientBksPassword("shinestb");
+                MQTT_CONNECTION_OPTIONS.setSocketFactory(new SelfSignedSocketFactory(socketFactoryOptions));
+                /*socketFactoryOptions.withCaInputStream(context.getResources().openRawResource(paho.android.mqtt_example.R.raw.mosquitto_org));
+                MQTT_CONNECTION_OPTIONS.setSocketFactory(new SocketFactory(socketFactoryOptions));*/
             } catch (IOException | NoSuchAlgorithmException | KeyStoreException | CertificateException | KeyManagementException | UnrecoverableKeyException e) {
                 e.printStackTrace();
             }
